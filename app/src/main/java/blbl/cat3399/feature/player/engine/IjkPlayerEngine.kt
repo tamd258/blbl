@@ -112,6 +112,20 @@ internal class IjkPlayerEngine(
         startPrepareIfPossible(reason = "surface_set")
     }
 
+    private var _audioOnly = false
+    override var audioOnly: Boolean
+        get() = _audioOnly
+        set(value) {
+            _audioOnly = value
+            try {
+                ijk?.setOption(
+                    IjkMediaPlayer.OPT_CATEGORY_PLAYER,
+                    "audio-only",
+                    if (value) 1 else 0
+                )
+            } catch (_: Exception) {}
+        }
+
     override fun seekTo(positionMs: Long) {
         val p = ijk ?: return
         val pos = positionMs.coerceAtLeast(0L)

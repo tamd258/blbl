@@ -978,6 +978,14 @@ class AppPrefs(context: Context) {
         return if (PLAYER_HOLD_SCRUB_SECONDS_OPTIONS.contains(value)) value else PLAYER_HOLD_SCRUB_SECONDS_DEFAULT
     }
 
+    var backgroundAudioEnabled: Boolean
+        get() = prefs.getBoolean(KEY_BACKGROUND_AUDIO_ENABLED, false)
+        set(value) = prefs.edit().putBoolean(KEY_BACKGROUND_AUDIO_ENABLED, value).apply()
+
+    var audioOnlyEnabled: Boolean
+        get() = prefs.getBoolean(KEY_AUDIO_ONLY_ENABLED, false)
+        set(value) = prefs.edit().putBoolean(KEY_AUDIO_ONLY_ENABLED, value).apply()
+
     companion object {
         const val STARTUP_PAGE_HOME = "home"
         const val STARTUP_PAGE_CATEGORY = "category"
@@ -1103,6 +1111,8 @@ class AppPrefs(context: Context) {
         private const val KEY_PLAYER_OSD_BUTTONS = "player_osd_buttons"
         private const val KEY_PLAYER_OSD_BUTTONS_DETAIL_MIGRATED = "player_osd_buttons_detail_migrated"
         private const val KEY_PLAYER_CUSTOM_SHORTCUTS = "player_custom_shortcuts"
+        private const val KEY_BACKGROUND_AUDIO_ENABLED = "background_audio_enabled"
+        private const val KEY_AUDIO_ONLY_ENABLED = "audio_only_enabled"
         private const val KEY_GRID_SPAN = "grid_span"
         private const val KEY_DYNAMIC_GRID_SPAN = "dynamic_grid_span"
         private const val KEY_PGC_GRID_SPAN = "pgc_grid_span"

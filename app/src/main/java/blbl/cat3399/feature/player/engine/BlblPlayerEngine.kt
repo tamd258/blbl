@@ -41,6 +41,8 @@ internal interface BlblPlayerEngine {
 
     var repeatMode: Int
 
+    var audioOnly: Boolean
+
     fun setSource(source: PlaybackSource)
     fun prepare()
     fun play()

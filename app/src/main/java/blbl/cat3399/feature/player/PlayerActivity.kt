@@ -881,6 +881,7 @@ class PlayerActivity : BaseActivity() {
                 }
             }
         player = engine
+        engine.audioOnly = prefs.audioOnlyEnabled
         applyRenderForEngine(engine, prefs)
         val exo = (engine as? ExoPlayerEngine)?.exoPlayer
         trace?.log("player:created", "kind=${engine.kind.prefValue}")
@@ -1768,7 +1769,12 @@ class PlayerActivity : BaseActivity() {
             transientPlaybackResumeRequested = null
         }
         super.onStop()
-        player?.pause()
+        val engine = player
+        if (engine != null && engine.isPlaying && BiliClient.prefs.backgroundAudioEnabled && !isFinishing && !isChangingConfigurations) {
+            BackgroundAudioService.start(this, "blbl", "后台播放中")
+        } else {
+            engine?.pause()
+        }
         if ((exitCleanupRequested || isFinishing) && !isChangingConfigurations) {
             val tDetach = SystemClock.elapsedRealtime()
             if (::binding.isInitialized && binding.playerView.player != null) {
@@ -1789,6 +1795,7 @@ class PlayerActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
+        BackgroundAudioService.stop(this)
         val engine = player ?: return
         val exo = (engine as? ExoPlayerEngine)?.exoPlayer
         if (!resumeAfterDecoderRelease) return

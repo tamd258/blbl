@@ -83,6 +83,7 @@ internal class ExoPlayerEngine(
         ExoPlayer.Builder(context, BlblRenderersFactory(context.applicationContext, volumeBalanceProcessor))
             .setLoadControl(loadControl)
             .setVideoChangeFrameRateStrategy(C.VIDEO_CHANGE_FRAME_RATE_STRATEGY_OFF)
+            .setWakeMode(C.WAKE_MODE_LOCAL)
             .build()
 
     private val listeners: MutableSet<BlblPlayerEngine.Listener> = CopyOnWriteArraySet()
@@ -114,6 +115,24 @@ internal class ExoPlayerEngine(
     override fun setVideoSurface(surface: Surface?) {
         // No-op: ExoPlayer renders through PlayerView.
     }
+
+    private var _audioOnly = false
+    override var audioOnly: Boolean
+        get() = _audioOnly
+        set(value) {
+            _audioOnly = value
+            if (value) {
+                exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters
+                    .buildUpon()
+                    .setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, true)
+                    .build()
+            } else {
+                exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters
+                    .buildUpon()
+                    .setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, false)
+                    .build()
+            }
+        }
 
     override fun seekTo(positionMs: Long) {
         exoPlayer.seekTo(positionMs)
