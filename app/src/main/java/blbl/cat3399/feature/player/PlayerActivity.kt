@@ -588,7 +588,7 @@ class PlayerActivity : BaseActivity() {
 
         val t0 = SystemClock.elapsedRealtime()
         val tPause = SystemClock.elapsedRealtime()
-        player?.pause()
+            player?.pause()
         val pauseCostMs = SystemClock.elapsedRealtime() - tPause
         exitTraceLog("exitCleanup:pause", "cost=${pauseCostMs}ms")
         exitTraceLog("exitCleanup:detachView", "deferred=1")
@@ -1763,14 +1763,14 @@ class PlayerActivity : BaseActivity() {
             )
         }
         trace?.log("activity:onStop")
-        val releaseDecoderOnStop = decoderReleaseRequestedOnStop
+        val releaseDecoderOnStop = if (BiliClient.prefs.backgroundAudioEnabled && !isFinishing && !isChangingConfigurations) false else decoderReleaseRequestedOnStop
         decoderReleaseRequestedOnStop = false
         if (isChangingConfigurations) {
             transientPlaybackResumeRequested = null
         }
         super.onStop()
         val engine = player
-        if (engine != null && engine.isPlaying && BiliClient.prefs.backgroundAudioEnabled && !isFinishing && !isChangingConfigurations) {
+        if (engine != null && BiliClient.prefs.backgroundAudioEnabled && !isFinishing && !isChangingConfigurations) {
             BackgroundAudioService.start(this, "blbl", "后台播放中")
         } else {
             engine?.pause()
@@ -1841,7 +1841,9 @@ class PlayerActivity : BaseActivity() {
         trace?.log("activity:onPause")
         // Pause as early as possible when leaving foreground (e.g. Home key).
         // Some TV boxes have vendor bugs with SurfaceView + codec when the surface is being torn down.
+        if (!BiliClient.prefs.backgroundAudioEnabled || isFinishing || isChangingConfigurations) {
         player?.pause()
+        }
         super.onPause()
         if (exitTraceStartAtMs > 0L) {
             exitTraceLog("lifecycle:onPause:afterSuper")
