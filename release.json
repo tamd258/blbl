@@ -1,8 +1,0 @@
-{
-  "tag_name": "v0.2.0",
-  "target_commitish": "main",
-  "name": "v0.2.0 - 后台播放 & 纯音频模式",
-  "body": "## 新功能\n\n### 🎵 后台播放\n- 切到后台或锁屏后继续播放音频\n- 前台服务通知保活\n- ExoPlayer WakeLock 保持播放\n\n### 🎧 纯音频模式\n- 只播放声音不播放画面，省电省流量\n- ExoPlayer: 禁用视频轨道，DASH 只拉音频流\n- IjkPlayer: audio-only option\n\n### 改动文件\n- AndroidManifest.xml: +WAKE_LOCK/FOREGROUND_SERVICE 权限 + 服务声明\n- BackgroundAudioService.kt: 新建前台保活服务\n- AppPrefs.kt: +backgroundAudioEnabled/audioOnlyEnabled 开关\n- BlblPlayerEngine.kt: 接口 +audioOnly\n- ExoPlayerEngine.kt: +setWakeMode +audioOnly 实现\n- IjkPlayerEngine.kt: +audioOnly 实现\n- PlayerActivity.kt: 后台不暂停 + 服务管理\n\n### 使用方式\n通过 SharedPreferences 控制，默认关闭:\n- background_audio_enabled: 后台播放开关\n- audio_only_enabled: 纯音频开关",
-  "draft": false,
-  "prerelease": false
-}
