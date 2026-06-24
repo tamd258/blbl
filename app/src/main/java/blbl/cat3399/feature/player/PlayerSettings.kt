@@ -63,6 +63,8 @@ internal object PlayerSettingKeys {
     const val DEBUG_INFO = "debug_info"
     const val PERSISTENT_BOTTOM_PROGRESS = "persistent_bottom_progress"
     const val PERSISTENT_CLOCK = "persistent_clock"
+    const val BACKGROUND_AUDIO = "background_audio"
+    const val AUDIO_ONLY = "audio_only"
 }
 
 internal enum class PlayerSettingsMenu {
@@ -405,6 +407,18 @@ internal fun PlayerActivity.handleSettingsItemClick(item: PlayerSettingsAdapter.
             refreshSettingsPanel()
         }
 
+        PlayerSettingKeys.BACKGROUND_AUDIO -> {
+            val appPrefs = BiliClient.prefs
+            appPrefs.backgroundAudioEnabled = !appPrefs.backgroundAudioEnabled
+            refreshSettingsPanel()
+        }
+        PlayerSettingKeys.AUDIO_ONLY -> {
+            val appPrefs = BiliClient.prefs
+            appPrefs.audioOnlyEnabled = !appPrefs.audioOnlyEnabled
+            player?.audioOnly = appPrefs.audioOnlyEnabled
+            refreshSettingsPanel()
+        }
+
         else -> AppToast.show(this, "暂未实现：${item.title}")
     }
 }
@@ -506,6 +520,8 @@ private fun PlayerActivity.buildRootSettingsItems(
             BiliClient.prefs.playerPersistentClockEnabled.switchText(),
         ),
         settingItem(PlayerSettingKeys.PLAYER_ENGINE, "播放器内核", playerEngineSubtitle()),
+        settingItem(PlayerSettingKeys.BACKGROUND_AUDIO, "后台播放", BiliClient.prefs.backgroundAudioEnabled.switchText()),
+        settingItem(PlayerSettingKeys.AUDIO_ONLY, "纯音频模式", BiliClient.prefs.audioOnlyEnabled.switchText()),
         settingItem(PlayerSettingKeys.DEBUG_INFO, "调试信息", session.debugEnabled.switchText()),
     )
 }
