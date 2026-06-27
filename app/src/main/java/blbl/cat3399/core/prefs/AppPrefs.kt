@@ -986,6 +986,10 @@ class AppPrefs(context: Context) {
         get() = prefs.getBoolean(KEY_AUDIO_ONLY_ENABLED, false)
         set(value) = prefs.edit().putBoolean(KEY_AUDIO_ONLY_ENABLED, value).apply()
 
+    var playerOrientation: String
+        get() = prefs.getString(KEY_PLAYER_ORIENTATION, "auto") ?: "auto"
+        set(value) = prefs.edit().putString(KEY_PLAYER_ORIENTATION, value).apply()
+
     companion object {
         const val STARTUP_PAGE_HOME = "home"
         const val STARTUP_PAGE_CATEGORY = "category"
@@ -1113,6 +1117,7 @@ class AppPrefs(context: Context) {
         private const val KEY_PLAYER_CUSTOM_SHORTCUTS = "player_custom_shortcuts"
         private const val KEY_BACKGROUND_AUDIO_ENABLED = "background_audio_enabled"
         private const val KEY_AUDIO_ONLY_ENABLED = "audio_only_enabled"
+        private const val KEY_PLAYER_ORIENTATION = "player_orientation"
         private const val KEY_GRID_SPAN = "grid_span"
         private const val KEY_DYNAMIC_GRID_SPAN = "dynamic_grid_span"
         private const val KEY_PGC_GRID_SPAN = "pgc_grid_span"
@@ -1269,6 +1274,9 @@ class AppPrefs(context: Context) {
         const val PLAYER_OSD_BTN_LIST_PANEL = "list_panel"
         const val PLAYER_OSD_BTN_SPONSOR_SUBMIT = "sponsor_submit"
         const val PLAYER_OSD_BTN_ADVANCED = "advanced"
+        const val PLAYER_OSD_BTN_ORIENTATION = "orientation"
+        const val PLAYER_OSD_BTN_BACKGROUND_AUDIO = "background_audio"
+        const val PLAYER_OSD_BTN_AUDIO_ONLY = "audio_only"
 
         val DEFAULT_PLAYER_OSD_BUTTONS: List<String> =
             listOf(
@@ -1281,6 +1289,9 @@ class AppPrefs(context: Context) {
                 PLAYER_OSD_BTN_SPONSOR_SUBMIT,
                 PLAYER_OSD_BTN_UP,
                 PLAYER_OSD_BTN_LIST_PANEL,
+                PLAYER_OSD_BTN_ORIENTATION,
+                PLAYER_OSD_BTN_BACKGROUND_AUDIO,
+                PLAYER_OSD_BTN_AUDIO_ONLY,
                 PLAYER_OSD_BTN_ADVANCED,
             )
 
@@ -1299,6 +1310,9 @@ class AppPrefs(context: Context) {
                 PLAYER_OSD_BTN_FAV,
                 PLAYER_OSD_BTN_LIST_PANEL,
                 PLAYER_OSD_BTN_SPONSOR_SUBMIT,
+                PLAYER_OSD_BTN_ORIENTATION,
+                PLAYER_OSD_BTN_BACKGROUND_AUDIO,
+                PLAYER_OSD_BTN_AUDIO_ONLY,
                 PLAYER_OSD_BTN_ADVANCED,
             )
 

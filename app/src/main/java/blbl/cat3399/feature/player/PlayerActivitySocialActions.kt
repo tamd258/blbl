@@ -36,6 +36,9 @@ internal fun PlayerActivity.applyOsdButtonsVisibility() {
     binding.btnListPanel.visibility = if (enabled.contains(AppPrefs.PLAYER_OSD_BTN_LIST_PANEL)) View.VISIBLE else View.GONE
     binding.btnSponsorSubmit.visibility = if (enabled.contains(AppPrefs.PLAYER_OSD_BTN_SPONSOR_SUBMIT)) View.VISIBLE else View.GONE
     binding.btnAdvanced.visibility = if (enabled.contains(AppPrefs.PLAYER_OSD_BTN_ADVANCED)) View.VISIBLE else View.GONE
+    binding.btnOrientation.visibility = if (enabled.contains(AppPrefs.PLAYER_OSD_BTN_ORIENTATION)) View.VISIBLE else View.GONE
+    binding.btnBackgroundAudio.visibility = if (enabled.contains(AppPrefs.PLAYER_OSD_BTN_BACKGROUND_AUDIO)) View.VISIBLE else View.GONE
+    binding.btnAudioOnly.visibility = if (enabled.contains(AppPrefs.PLAYER_OSD_BTN_AUDIO_ONLY)) View.VISIBLE else View.GONE
     if (binding.btnLike.visibility != View.VISIBLE) cancelLikeButtonHoldGesture(resetTriggered = true)
 
     updateActionButtonsUi()

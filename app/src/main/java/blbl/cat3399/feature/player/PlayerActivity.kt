@@ -3,6 +3,7 @@
 package blbl.cat3399.feature.player
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.app.Activity
 import android.app.Application
@@ -700,6 +701,7 @@ class PlayerActivity : BaseActivity() {
             )
         setContentView(binding.root)
         Immersive.apply(this, prefs.fullscreenEnabled)
+        applyPlayerOrientation()
         PlayerUiMode.applyVideo(this, binding)
         ensureBottomBarConstraintSets()
 
@@ -2081,6 +2083,21 @@ class PlayerActivity : BaseActivity() {
 
         binding.btnUp.setOnClickListener {
             openCurrentUpDetail()
+            setControlsVisible(true)
+        }
+        binding.btnOrientation.setOnClickListener {
+            showScreenOrientationDialog()
+            setControlsVisible(true)
+        }
+        binding.btnBackgroundAudio.setOnClickListener {
+            val appPrefs = BiliClient.prefs
+            appPrefs.backgroundAudioEnabled = !appPrefs.backgroundAudioEnabled
+            setControlsVisible(true)
+        }
+        binding.btnAudioOnly.setOnClickListener {
+            val appPrefs = BiliClient.prefs
+            appPrefs.audioOnlyEnabled = !appPrefs.audioOnlyEnabled
+            player?.audioOnly = appPrefs.audioOnlyEnabled
             setControlsVisible(true)
         }
         setupUpQuickCardActions()
@@ -3648,6 +3665,22 @@ class PlayerActivity : BaseActivity() {
         private const val PLAYURL_AUTO_REFRESH_MIN_RELOAD_INTERVAL_MS = 30_000L
     }
 
+    fun applyPlayerOrientation() {
+        val orientation = BiliClient.prefs.playerOrientation
+        requestedOrientation = when (orientation) {
+            "landscape" -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            "portrait" -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+            else -> {
+                // Auto: follow video aspect ratio
+                when (currentVideoIsPortrait) {
+                    true -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+                    false -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                    null -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                }
+            }
+        }
+    }
+
     private fun applyRenderForEngine(engine: BlblPlayerEngine, prefs: AppPrefs) {
         // Reset any previous IJK render state.
         binding.ijkAspect.visibility = View.GONE
@@ -3748,5 +3781,5 @@ class PlayerActivity : BaseActivity() {
                 }
             }
         }
-    }
+      }
 }

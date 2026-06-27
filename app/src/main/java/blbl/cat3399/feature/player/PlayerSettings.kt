@@ -65,6 +65,7 @@ internal object PlayerSettingKeys {
     const val PERSISTENT_CLOCK = "persistent_clock"
     const val BACKGROUND_AUDIO = "background_audio"
     const val AUDIO_ONLY = "audio_only"
+    const val SCREEN_ORIENTATION = "screen_orientation"
 }
 
 internal enum class PlayerSettingsMenu {
@@ -419,6 +420,10 @@ internal fun PlayerActivity.handleSettingsItemClick(item: PlayerSettingsAdapter.
             refreshSettingsPanel()
         }
 
+        PlayerSettingKeys.SCREEN_ORIENTATION -> {
+            showScreenOrientationDialog()
+        }
+
         else -> AppToast.show(this, "暂未实现：${item.title}")
     }
 }
@@ -522,6 +527,7 @@ private fun PlayerActivity.buildRootSettingsItems(
         settingItem(PlayerSettingKeys.PLAYER_ENGINE, "播放器内核", playerEngineSubtitle()),
         settingItem(PlayerSettingKeys.BACKGROUND_AUDIO, "后台播放", BiliClient.prefs.backgroundAudioEnabled.switchText()),
         settingItem(PlayerSettingKeys.AUDIO_ONLY, "纯音频模式", BiliClient.prefs.audioOnlyEnabled.switchText()),
+        settingItem(PlayerSettingKeys.SCREEN_ORIENTATION, "屏幕方向", playerOrientationLabel()),
         settingItem(PlayerSettingKeys.DEBUG_INFO, "调试信息", session.debugEnabled.switchText()),
     )
 }
@@ -1164,6 +1170,35 @@ internal fun PlayerActivity.showDanmakuLaneDensityDialog() {
             syncToGlobal = { danmakuLaneDensity = it.prefValue },
             afterApplied = { binding.danmakuView.invalidate() },
         )
+    }
+}
+
+private fun PlayerActivity.playerOrientationLabel(): String {
+    return when (BiliClient.prefs.playerOrientation) {
+        "landscape" -> "强制横屏"
+        "portrait" -> "强制竖屏"
+        else -> "跟随视频"
+    }
+}
+
+internal fun PlayerActivity.showScreenOrientationDialog() {
+    val current = BiliClient.prefs.playerOrientation
+    val options = listOf(
+        "auto" to "跟随视频",
+        "landscape" to "强制横屏",
+        "portrait" to "强制竖屏",
+    )
+    val labels = options.map { it.second }
+    val checkedIndex = options.indexOfFirst { it.first == current }.coerceAtLeast(0)
+    showSettingsSingleChoiceDialog(
+        title = "屏幕方向",
+        items = labels,
+        checkedIndex = checkedIndex,
+    ) { index, _ ->
+        val value = options[index].first
+        BiliClient.prefs.playerOrientation = value
+        applyPlayerOrientation()
+        refreshSettingsPanel()
     }
 }
 
